@@ -7,7 +7,7 @@ router.use(cors());
 
 process.env.SECRET_KEY = 'secret';
 
-let user = require('..../models/user.model');
+let user = require('../models/user.model');
 
 router.route('/').get((req, res) => {
     user.find()

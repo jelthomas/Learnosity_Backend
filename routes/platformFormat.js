@@ -1,5 +1,5 @@
 const router = require('express').Router();
-let platformFormat = require('..../models/platformFormat.model');
+let platformFormat = require('../models/platformFormat.model');
 
 router.route('/').get((req, res) => {
     platformFormat.find()

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-let pageFormat = require('..../models/pageFormat.model');
+let pageFormat = require('../models/pageFormat.model');
 
 router.route('/').get((req, res) => {
     pageFormat.find()

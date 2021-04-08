@@ -1,5 +1,5 @@
 const router = require('express').Router();
-let platformData = require('..../models/platformData.model');
+let platformData = require('../models/platformData.model');
 
 //gets every platform Data
 router.route('/').get((req, res) => {

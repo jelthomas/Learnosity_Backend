@@ -5,11 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "jest",
-    "build": "npm run build",
-    "install-client": "npm install",
-    "heroku-postbuild": "npm run install-client && npm run build",
-    "start": "node server.js",
-    "client": "npm start"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "",

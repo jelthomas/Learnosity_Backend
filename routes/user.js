@@ -15,8 +15,8 @@ router.route('/').get((req, res) => {
 
 // gets Security Question for a User or Email
 // specifically selects just the one value 
-router.route('/getSecurityQuestion').get((req, res) => {
-  user.find({$or:[{username: req.body.identifier},{email:req.body.identifier}]}).select('security_question -_id')
+router.route('/getSecurityQuestion/:identifier').get((req, res) => {
+  user.find({$or:[{username: req.params.identifier},{email:req.params.identifier}]}).select('security_question -_id')
     .then(user => res.json(user))
     .catch(err => res.status(400).json('Error: ' + err));
 });

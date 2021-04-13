@@ -1,11 +1,9 @@
 const router = require('express').Router();
-const jwt = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 const cors = require("cors");
 
 router.use(cors());
 
-process.env.SECRET_KEY = 'secret';
 
 let user = require('../models/user.model');
 
@@ -116,10 +114,7 @@ router.post('/login', (req,res)=>{
           _id: tempUser._id,
           username: tempUser.username
         }
-        let token = jwt.sign(payload, process.env.SECRET_KEY, {
-          expiresIn: 1440
-        })
-        res.send("Successfully logged in " + tempUser.username + ". Token: " + token);
+        res.json({payload: payload});
       }
       else{
         res.json({error: "Incorrect Password"})

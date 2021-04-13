@@ -21,6 +21,12 @@ router.route('/getSecurityQuestion/:identifier').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/getID/:identifier').get((req, res) => {
+  user.find({$or:[{username: req.params.identifier},{email:req.params.identifier}]}).select('_id')
+    .then(user => res.json(user))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 router.route('/getSecurityAnswer/:identifier').get((req, res) => {
   user.find({$or:[{username: req.params.identifier},{email:req.params.identifier}]}).select('security_answer -_id')
     .then(user => res.json(user))
@@ -162,6 +168,20 @@ router.route('/update/:id').post((req, res) => {
               .catch(err => res.status(400).json('Error: ' + err));
       })
       .catch(err => res.status(400).json('Error: ' + err));
+})
+
+router.route('/updatePassword/:id').put((req, res, next) => {
+  user.findByIdAndUpdate(req.params.id, {
+      $set: req.body
+  }, (error, data) => {
+      if (error) {
+          return next(error);
+          console.log(error)
+      } else {
+          res.json(data)
+          console.log('User updated successfully !')
+      }
+  })
 })
 
 router.route('/updateProfilePicture/:id').post((req, res) => {

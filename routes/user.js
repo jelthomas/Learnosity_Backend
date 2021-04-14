@@ -170,17 +170,21 @@ router.route('/update/:id').post((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 })
 
-router.route('/updatePassword/:id').put((req, res, next) => {
-  user.findByIdAndUpdate(req.params.id, {
-      $set: req.body
-  }, (error, data) => {
-      if (error) {
-          return next(error);
-          console.log(error)
-      } else {
-          res.json(data)
-          console.log('User updated successfully !')
+
+router.post('/updatePassword/:id',(req, res) => {
+
+  bcrypt.hash(req.body.password, 10, (err,hash) =>{
+    user.updateOne(
+      {_id:req.params.id}, 
+      {password:hash}, 
+      function (err, data) {
+      if (err){
+          console.log(err)
       }
+      else{
+          res.send(data)
+      }
+    });
   })
 })
 

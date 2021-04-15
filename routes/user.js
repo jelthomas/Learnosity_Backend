@@ -99,13 +99,20 @@ router.post('/signup', (req,res)=>{
     if(!tempUser){
       bcrypt.hash(req.body.password, 10, (err,hash) =>{
         newUser.password = hash;
-        user.create(newUser)
-        .then(user => {
-          res.json({status: user.username + " registered!"})
+
+
+        bcrypt.hash(req.body.security_answer, 10, (err,hash2) =>{
+          newUser.security_answer = hash2;
+        
+          user.create(newUser)
+          .then(user => {
+            res.json({status: user.username + " registered!"})
+          })
+          .catch(err =>{
+            res.send("Error: " + err);
+          })
         })
-        .catch(err =>{
-          res.send("Error: " + err);
-        })
+
       })
     }
     else{

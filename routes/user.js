@@ -206,4 +206,32 @@ router.route('/updateProfilePicture/:id').post((req, res) => {
       })
       .catch(err => res.status(400).json('Error: ' + err));
 })
+
+router.post('/compareSecurityAnswer/:identifier', (req,res)=>{
+  user.findOne({$or:[{username: req.params.identifier},{email:req.params.identifier}]})
+  .then(tempUser => {
+    if(tempUser){
+      if(bcrypt.compareSync(req.body.security_answer, tempUser.security_answer)){
+        const payload = {
+          answer: true
+        }
+        res.send(payload);
+      }
+      else{
+        const payload = {
+          answer: false
+        }
+        res.send(payload);
+      }
+    }
+    else{
+      res.json({error: "User does not exist"})
+    }
+  })
+  .catch(err => {
+    res.send("Error: " + err);
+  })
+});
+
+
 module.exports = router;

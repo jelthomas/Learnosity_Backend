@@ -21,6 +21,22 @@ router.route('/getSecurityQuestion/:identifier').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+// selects just the learned_platforms array for a specific user's ID
+router.route('/getLearnedPlatforms').get((req, res) => {
+  user.findById(req.body.id).select('learned_platforms -_id')
+    .then(user => res.json(user))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+// adds a platformData ID to the learned_platforms array of the user (id => user's ID, learned_id => platformData ID)
+router.route('/addLearnedPlatform').post((req, res) => {
+  user.findByIdAndUpdate(req.body.id,
+    { "$push": { "learned_platforms": req.body.learned_id } },
+    { "new": true, "upsert": true }
+    )
+    .then( () => res.json({status: "Added to learned array!"}) )
+    .catch(err => console.log("ERROR!! " + err))});
+
 router.route('/getID/:identifier').get((req, res) => {
   user.find({$or:[{username: req.params.identifier},{email:req.params.identifier}]}).select('_id')
     .then(user => res.json(user))
@@ -44,32 +60,6 @@ router.route('/delete/:id').delete((req, res) => {
       .then(() => res.json('User deleted.'))
       .catch(err => res.status(400).json('Error: ' + err));
 });
-
-// router.route('/signup').post((req, res) => {
-//   const username = req.body.username;
-//   const email = req.body.email;
-//   const password = req.body.password;
-//   const security_question = req.body.security_question;
-//   const security_answer = req.body.security_answer;
-//   const total_time_played = req.body.total_time_played;
-//   const completed_platforms = req.body.completed_platforms;
-//   const experience_points = req.body.experience_points;
-
-//   const newUser = new user({
-//     username, 
-//     email,
-//     password,
-//     security_question,
-//     security_answer,
-//     total_time_played,
-//     completed_platforms,
-//     experience_points
-//   });
-
-//   newUser.save()
-//   .then(() => res.json('User added!'))
-//   .catch(err => res.status(400).json('Error: ' + err));
-// });
 
 
 

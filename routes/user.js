@@ -178,11 +178,11 @@ router.route('/update/:id').post((req, res) => {
 })
 
 
-router.post('/updatePassword/:id',(req, res) => {
+router.post('/updatePassword/:identifier',(req, res) => {
 
   bcrypt.hash(req.body.password, 10, (err,hash) =>{
     user.updateOne(
-      {_id:req.params.id}, 
+      {$or:[{username: req.params.identifier},{email:req.params.identifier}]}, 
       {password:hash}, 
       function (err, data) {
       if (err){

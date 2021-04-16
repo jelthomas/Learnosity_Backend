@@ -22,9 +22,9 @@ router.route('/getSecurityQuestion/:identifier').get((req, res) => {
 });
 
 // selects just the learned_platforms array for a specific user's ID
-router.route('/getLearnedPlatforms').get((req, res) => {
-  user.findById(req.body.id).select('learned_platforms -_id')
-    .then(user => res.json(user))
+router.route('/getLearnedPlatforms/:id').get((req, res) => {
+  user.findById(req.params.id).select('learned_platforms -_id')
+    .then(user => res.json(user.learned_platforms))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 

@@ -9,9 +9,24 @@ router.route('/').get((req, res) => {
 });
 
 //get platform Data's using array of Learned Platform Data
-router.route('/getLearnedPlatforms').get((req, res) => {
-  platformData.find({ _id: {$in : req.body.platformDatas_id}})
+router.route('/getLearnedPlatforms').post((req, res) => {
+  platformData.find({ _id: {$in : req.body.platformDatas_id}, user_id: req.body.user_id})
     .then(platformDatas => res.json(platformDatas))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+//get platform Data's using array of RECENT (a month ago or sooner) Learned Platform Data
+router.route('/getRecentPlatforms').post((req, res) => {
+  //Sets date to one month ago (Also considers edge cases of previous month having different number of days that current month)
+  var d = new Date();
+  var month = d.getMonth();
+  d.setMonth(d.getMonth() - 1);
+  while (d.getMonth() === month) {
+      d.setDate(d.getDate() - 1);
+  }
+  // var platformDatas_arr = Array(req.body.platformDatas_id);
+  platformData.find({ _id: {$in : req.body.platformDatas_id}, user_id: req.body.user_id, recently_played: {$gte: d}}, 'completed_pages is_favorited platform_id -_id').sort({recently_played: 'desc'})
+    .then(platformDatas => {res.json(platformDatas)})
     .catch(err => res.status(400).json('Error: ' + err));
 });
 

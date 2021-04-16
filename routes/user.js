@@ -89,13 +89,20 @@ router.post('/signup', (req,res)=>{
     if(!tempUser){
       bcrypt.hash(req.body.password, 10, (err,hash) =>{
         newUser.password = hash;
-        user.create(newUser)
-        .then(user => {
-          res.json({status: user.username + " registered!"})
+
+
+        bcrypt.hash(req.body.security_answer, 10, (err,hash2) =>{
+          newUser.security_answer = hash2;
+        
+          user.create(newUser)
+          .then(user => {
+            res.json({status: user.username + " registered!"})
+          })
+          .catch(err =>{
+            res.send("Error: " + err);
+          })
         })
-        .catch(err =>{
-          res.send("Error: " + err);
-        })
+
       })
     }
     else{
@@ -161,11 +168,11 @@ router.route('/update/:id').post((req, res) => {
 })
 
 
-router.post('/updatePassword/:id',(req, res) => {
+router.post('/updatePassword/:identifier',(req, res) => {
 
   bcrypt.hash(req.body.password, 10, (err,hash) =>{
     user.updateOne(
-      {_id:req.params.id}, 
+      {$or:[{username: req.params.identifier},{email:req.params.identifier}]}, 
       {password:hash}, 
       function (err, data) {
       if (err){
@@ -189,4 +196,32 @@ router.route('/updateProfilePicture/:id').post((req, res) => {
       })
       .catch(err => res.status(400).json('Error: ' + err));
 })
+
+router.post('/compareSecurityAnswer/:identifier', (req,res)=>{
+  user.findOne({$or:[{username: req.params.identifier},{email:req.params.identifier}]})
+  .then(tempUser => {
+    if(tempUser){
+      if(bcrypt.compareSync(req.body.security_answer, tempUser.security_answer)){
+        const payload = {
+          answer: true
+        }
+        res.send(payload);
+      }
+      else{
+        const payload = {
+          answer: false
+        }
+        res.send(payload);
+      }
+    }
+    else{
+      res.json({error: "User does not exist"})
+    }
+  })
+  .catch(err => {
+    res.send("Error: " + err);
+  })
+});
+
+
 module.exports = router;

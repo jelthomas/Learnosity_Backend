@@ -14,6 +14,12 @@ router.route('/getArrayof').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/getRecentPlatformFormatData').post((req, res) => {
+    platformFormat.find({ _id: {$in : req.body.platformFormat_ids}}, 'pages is_published plat_name owner is_public cover_photo privacy_password')
+    .then(platformFormats => {res.json(platformFormats)})
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 router.route('/:id').get((req, res) => {
     platformFormat.findById(req.params.id)
       .then(platformFormat => res.json(platformFormat))

@@ -37,6 +37,13 @@ router.route('/getRecentPlatforms').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//get specific platform Data for user id and platform id
+router.route('/getSpecificPlatformData').post((req, res) => {
+  platformData.find({$and:[{user_id: req.body.id},{platform_id:req.body.platid}]})
+    .then(platformDatas => res.json(platformDatas))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 //gets a platform Data based on ID
 router.route('/:id').get((req, res) => {
   platformData.findById(req.params.id)

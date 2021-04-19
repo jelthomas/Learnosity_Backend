@@ -81,6 +81,29 @@ router.route('/add').post((req, res) => {
   .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//adds a platformData for favoriting platforms you never played
+router.route('/addFavorite').post((req, res) => {
+  const user_id = req.body.user_id;
+  const platform_id = req.body.platform_id;
+  const completed_pages = req.body.completed_pages;
+  const is_favorited = req.body.is_favorited;
+  const is_completed = req.body.is_completed;
+  const recently_played = null;
+
+  const newplatformData = new platformData({
+    user_id, 
+    platform_id,
+    completed_pages,
+    is_favorited, 
+    is_completed,
+    recently_played
+  });
+
+  newplatformData.save()
+  .then(() => res.json('PlatformData added!'))
+  .catch(err => res.status(400).json('Error: ' + err));
+});
+
 //updates the platform Data by ID
 router.route('/update/:id').post((req, res) => {
   platformData.findById(req.params.id)

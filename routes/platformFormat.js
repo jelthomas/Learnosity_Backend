@@ -1,8 +1,8 @@
 const router = require('express').Router();
 let platformFormat = require('../models/platformFormat.model');
 
-router.route('/').get((req, res) => {
-    platformFormat.find()
+router.route('/:username').get((req, res) => {
+    platformFormat.find({ owner: { $ne: req.params.username }, is_published: true }, 'plat_name owner is_public privacy_password cover_photo pages _id')
       .then(platformFormats => res.json(platformFormats))
       .catch(err => res.status(400).json('Error: ' + err));
 });

@@ -15,6 +15,13 @@ router.route('/getLearnedPlatforms').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//get platform Data's using array of Platform Format Ids
+router.route('/getAllPlatforms').post((req, res) => {
+  platformData.find({ platform_id: {$in : req.body.platformFormat_ids}, user_id: req.body.user_id}, 'completed_pages is_favorited platform_id recently_played -_id')
+    .then(platformDatas => res.json(platformDatas))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 //get platform Data's using array of RECENT (a month ago or sooner) Learned Platform Data
 router.route('/getRecentPlatforms').post((req, res) => {
   //Sets date to one month ago (Also considers edge cases of previous month having different number of days that current month)
@@ -82,6 +89,18 @@ router.route('/update/:id').post((req, res) => {
               .catch(err => res.status(400).json('Error: ' + err));
       })
       .catch(err => res.status(400).json('Error: ' + err));
+})
+
+//updates the platform Data is_favorited by ID
+router.route('/toggleFavorited').post((req, res) => {
+  platformData.find({platform_id: req.body.id, user_id: req.body.user_id})
+  .then(platformData => {
+    platformData[0].is_favorited = req.body.is_favorited;
+    platformData[0].save()
+      .then(() => res.json('Platform Data is_favorited toggled!'))
+      .catch(err => res.status(400).json('Error: ' + err));
+  })
+  .catch(err => res.status(400).json('Error: ' + err));
 })
 
 router.route('/updatePages/:id').post((req, res) => {

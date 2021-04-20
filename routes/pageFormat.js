@@ -7,6 +7,13 @@ router.route('/').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
   });
 
+//get pageFormats using array of pageFormatID
+router.route('/getAllPages').post((req, res) => {
+    pageFormat.find({ _id: {$in : req.body.pages_id}}).sort({order: 'asc'})
+      .then(pagesData => {res.json(pagesData)})
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
 router.route('/:id').get((req, res) => {
     pageFormat.findById(req.params.id)
       .then(pageFormat => res.json(pageFormat))
@@ -30,7 +37,7 @@ router.route('/add').post((req, res) => {
    const fill_in_the_blank_answers = req.body.fill_in_the_blank_answers;
    const clock = req.body.clock;
    const timer_answers = req.body.timer_answers;
-    
+   const order = req.body.order;
    const newpageFormat = new pageFormat({
     type,
     prompt,
@@ -41,7 +48,8 @@ router.route('/add').post((req, res) => {
     matching_pairs,
     fill_in_the_blank_answers,
     clock,
-    timer_answers
+    timer_answers,
+    order
    });
 
    newpageFormat.save()

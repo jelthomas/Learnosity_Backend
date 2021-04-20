@@ -38,6 +38,15 @@ router.route('/:id').delete((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 });
 
+// adds a pageFormat ID to the pages array of the platformFormat object (platform_format_id => platformFormat ID)
+router.route('/addToPages').post((req, res) => {
+    platformFormat.findByIdAndUpdate({_id: req.body.platform_format_id},
+      { "$push": { "pages": req.body.page_format_id } },
+      { "new": true, "upsert": true }
+      )
+      .then( () => res.json({status: "Added to pages array!"}) )
+      .catch(err => console.log("ERROR!! " + err))});
+
  router.route('/add').post((req, res) => {
     const plat_name = req.body.plat_name;
     const owner = req.body.owner;

@@ -15,6 +15,15 @@ router.route('/getLearnedPlatforms').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+// adds a pageFormat ID to the completed_pages array of the user's platformData object (user_id => user's ID, platform_format_id => platformFormat ID)
+router.route('/addToCompletedPages').post((req, res) => {
+  platformData.findOneAndUpdate({platform_id: req.body.platform_format_id, user_id: req.body.user_id},
+    { "$push": { "completed_pages": req.body.page_format_id } },
+    { "new": true, "upsert": true }
+    )
+    .then( () => res.json({status: "Added to completed_pages array!"}) )
+    .catch(err => console.log("ERROR!! " + err))});
+
 //get platform Data's using array of Platform Format Ids
 router.route('/getAllPlatforms').post((req, res) => {
   platformData.find({ platform_id: {$in : req.body.platformFormat_ids}, user_id: req.body.user_id}, 'completed_pages is_favorited platform_id recently_played -_id')
@@ -41,6 +50,13 @@ router.route('/getRecentPlatforms').post((req, res) => {
 router.route('/getSpecificPlatformData').post((req, res) => {
   platformData.find({$and:[{user_id: req.body.id},{platform_id:req.body.platid}]})
     .then(platformDatas => res.json(platformDatas))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+//get specific platform Data (only completed_pages) for user id and platform id
+router.route('/getPlatformDataCompletedPages').post((req, res) => {
+  platformData.find({$and:[{user_id: req.body.id},{platform_id:req.body.platid}]}, 'completed_pages -_id')
+    .then(platformDatas => res.json(platformDatas[0]))
     .catch(err => res.status(400).json('Error: ' + err));
 });
 

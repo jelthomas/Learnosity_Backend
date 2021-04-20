@@ -120,6 +120,24 @@ router.route('/addFavorite').post((req, res) => {
   .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/updateRecentlyPlayed/').post((req, res) => {
+  platformData.updateOne(
+    {user_id:req.body.user_id,platform_id:req.body.platform_id},
+    {$set: {recently_played:req.body.newRecentlyPlayed}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 //updates the platform Data by ID
 router.route('/update/:id').post((req, res) => {
   platformData.findById(req.params.id)

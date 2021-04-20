@@ -20,6 +20,10 @@ const pageFormatSchema = new Schema({
           required: true, 
           minLength: 1
      }, 
+     order:{
+          type: Number, 
+          required: true,
+     },
      multiple_choices : {
           type: {
                answer: {

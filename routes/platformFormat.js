@@ -26,6 +26,12 @@ router.route('/:id').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/getPages/:id').get((req, res) => {
+    platformFormat.findById(req.params.id, 'pages -_id')
+      .then(platformFormat => res.json(platformFormat))
+      .catch(err => res.status(400).json('Error: ' + err));
+});
+
 router.route('/:id').delete((req, res) => {
     platformFormat.findByIdAndDelete(req.params.id)
         .then(() => res.json('Platform Format deleted.'))

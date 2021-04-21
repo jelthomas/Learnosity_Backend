@@ -138,6 +138,63 @@ router.route('/updateRecentlyPlayed/').post((req, res) => {
   )
 })
 
+//update Completed Page
+router.route('/updateCompletedPage/').post((req, res) => {
+  platformData.updateOne(
+    {user_id:req.body.user_id,platform_id:req.body.platform_id},
+    {$addToSet: {completed_pages:[req.body.page_id]}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//
+router.route('/clearCompletedPage/').post((req, res) => {
+  platformData.updateOne(
+    {user_id:req.body.user_id,platform_id:req.body.platform_id},
+    {$set: {completed_pages:[]}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//set is_completed to true 
+router.route('/setCompletedTrue/').post((req, res) => {
+  platformData.updateOne(
+    {user_id:req.body.user_id,platform_id:req.body.platform_id},
+    {$set: {is_completed:true}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 //updates the platform Data by ID
 router.route('/update/:id').post((req, res) => {
   platformData.findById(req.params.id)

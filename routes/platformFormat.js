@@ -1,8 +1,8 @@
 const router = require('express').Router();
 let platformFormat = require('../models/platformFormat.model');
 
-router.route('/:username').get((req, res) => {
-    platformFormat.find({ owner: { $ne: req.params.username }, is_published: true }, 'plat_name owner is_public privacy_password cover_photo pages _id')
+router.route('/:username').post((req, res) => {
+    platformFormat.find({ owner: { $ne: req.params.username }, is_published: true }, 'plat_name owner is_public privacy_password cover_photo pages _id').skip(req.body.index).limit(req.body.max)
       .then(platformFormats => res.json(platformFormats))
       .catch(err => res.status(400).json('Error: ' + err));
 });
@@ -15,8 +15,8 @@ router.route('/getArrayof').get((req, res) => {
 });
 
 //gets specific platform format 
-router.route('/getSpecificPlatformFormat').post((req, res) => {
-    platformFormat.find({_id: req.body.id})
+router.route('/getSpecificPlatformFormat/:id').get((req, res) => {
+    platformFormat.find({_id: req.params.id})
       .then(platformFormats => res.json(platformFormats))
       .catch(err => res.status(400).json('Error: ' + err));
 });

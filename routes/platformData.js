@@ -41,7 +41,7 @@ router.route('/getRecentPlatforms').post((req, res) => {
       d.setDate(d.getDate() - 1);
   }
   // var platformDatas_arr = Array(req.body.platformDatas_id);
-  platformData.find({ _id: {$in : req.body.platformDatas_id}, user_id: req.body.user_id, recently_played: {$gte: d}}, 'completed_pages is_favorited platform_id -_id').sort({recently_played: 'desc'})
+  platformData.find({user_id: req.body.user_id, recently_played: {$gte: d}}, 'completed_pages is_favorited platform_id -_id').sort({recently_played: 'desc'}).skip(req.body.index).limit(req.body.max)
     .then(platformDatas => {res.json(platformDatas)})
     .catch(err => res.status(400).json('Error: ' + err));
 });

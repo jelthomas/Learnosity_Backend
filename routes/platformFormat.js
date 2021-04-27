@@ -7,6 +7,12 @@ router.route('/:username').post((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/getAllPlatformFormats').post((req, res) => {
+    platformFormat.find({_id: {$in : req.params.ids}}, 'plat_name owner is_public privacy_password cover_photo pages -_id')
+      .then(platformFormats => res.json(platformFormats))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
 //This route is for My Platform and Dashboard when we need to retrieve the array of PlatformFormat schemas for all the user's created and learned platforms
 router.route('/getArrayof').get((req, res) => {
     platformFormat.find({ _id: {$in : req.body.platformFormat_ids}})

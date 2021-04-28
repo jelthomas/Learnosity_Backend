@@ -48,7 +48,7 @@ router.route('/add').post((req, res) => {
    });
 
    newpageFormat.save()
-   .then(() => res.json('PageFormat added!'))
+   .then(() => res.json(newpageFormat))
    .catch(err => res.status(400).json('Error: ' + err));
 });
 
@@ -65,6 +65,7 @@ router.route('/update/:id').post((req, res) => {
             pageFormat.fill_in_the_blank_answers = req.body.fill_in_the_blank_answers;
             pageFormat.clock = req.body.clock;
             pageFormat.timer_answers = req.body.timer_answers;
+            pageFormat.order = req.body.order;
 
             pageFormat.save()
                 .then(() => res.json('Page Format Updated!'))

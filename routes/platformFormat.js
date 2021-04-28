@@ -58,7 +58,7 @@ router.route('/addToPages').post((req, res) => {
     });
 
     newplatformFormat.save()
-    .then(() => res.json('Platform Format added!'))
+    .then(() => res.json(newplatformFormat))
     .catch(err => res.status(400).json('Error: ' + err));
  });
 

@@ -1,24 +1,19 @@
 const router = require('express').Router();
 let platformFormat = require('../models/platformFormat.model');
 
-router.route('/:username').post((req, res) => {
+router.route('/returnFormats').post((req, res) => {
+    platformFormat.find({_id: {$in : req.body.ids}}, 'plat_name owner is_public privacy_password cover_photo pages')
+      .then(platformFormats => res.json(platformFormats))
+      .catch(err => res.status(400).json('Error: ' + err));
+  });
+
+
+router.route('/getNonUserPlatforms/:username/').post((req, res) => {
     platformFormat.find({ owner: { $ne: req.params.username }, is_published: true }, 'plat_name owner is_public privacy_password cover_photo pages _id').skip(req.body.index).limit(req.body.max)
       .then(platformFormats => res.json(platformFormats))
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/getAllPlatformFormats').post((req, res) => {
-    platformFormat.find({_id: {$in : req.params.ids}}, 'plat_name owner is_public privacy_password cover_photo pages -_id')
-      .then(platformFormats => res.json(platformFormats))
-      .catch(err => res.status(400).json('Error: ' + err));
-  });
-
-//This route is for My Platform and Dashboard when we need to retrieve the array of PlatformFormat schemas for all the user's created and learned platforms
-router.route('/getArrayof').get((req, res) => {
-    platformFormat.find({ _id: {$in : req.body.platformFormat_ids}})
-      .then(platformFormats => res.json(platformFormats))
-      .catch(err => res.status(400).json('Error: ' + err));
-});
 
 //gets specific platform format 
 router.route('/getSpecificPlatformFormat/:id').get((req, res) => {
@@ -27,25 +22,8 @@ router.route('/getSpecificPlatformFormat/:id').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/getRecentPlatformFormatData').post((req, res) => {
-    platformFormat.find({ _id: {$in : req.body.platformFormat_ids}}, 'pages is_published plat_name owner is_public cover_photo privacy_password')
-    .then(platformFormats => {res.json(platformFormats)})
-    .catch(err => res.status(400).json('Error: ' + err));
-});
 
-router.route('/:id').get((req, res) => {
-    platformFormat.findById(req.params.id)
-      .then(platformFormat => res.json(platformFormat))
-      .catch(err => res.status(400).json('Error: ' + err));
-});
-
-router.route('/getPages/:id').get((req, res) => {
-    platformFormat.findById(req.params.id, 'pages -_id')
-      .then(platformFormat => res.json(platformFormat))
-      .catch(err => res.status(400).json('Error: ' + err));
-});
-
-router.route('/:id').delete((req, res) => {
+router.route('/deleteSpecificPlatformFormat/:id').delete((req, res) => {
     platformFormat.findByIdAndDelete(req.params.id)
         .then(() => res.json('Platform Format deleted.'))
         .catch(err => res.status(400).json('Error: ' + err));
@@ -122,5 +100,11 @@ router.route('/update_cover_photo/:id').post((req, res) => {
         })
         .catch(err => res.status(400).json('Error: ' + err));
 })
+
+router.route('/getPages/:id').get((req, res) => {
+    platformFormat.findById(req.params.id, 'pages -_id')
+      .then(platformFormat => res.json(platformFormat))
+      .catch(err => res.status(400).json('Error: ' + err));
+});
 
 module.exports = router;

@@ -1,11 +1,6 @@
 const router = require('express').Router();
 let pageFormat = require('../models/pageFormat.model');
 
-router.route('/').get((req, res) => {
-    pageFormat.find()
-      .then(pageFormats => res.json(pageFormats))
-      .catch(err => res.status(400).json('Error: ' + err));
-  });
 
 //get pageFormats using array of pageFormatID
 router.route('/getAllPages').post((req, res) => {
@@ -14,13 +9,13 @@ router.route('/getAllPages').post((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
   });
 
-router.route('/:id').get((req, res) => {
+router.route('/getSpecificPage/:id').get((req, res) => {
     pageFormat.findById(req.params.id)
       .then(pageFormat => res.json(pageFormat))
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
-router.route('/:id').delete((req, res) => {
+router.route('/deleteSpecificPage/:id').delete((req, res) => {
     pageFormat.findByIdAndDelete(req.params.id)
         .then(() => res.json('PageFormat deleted.'))
         .catch(err => res.status(400).json('Error: ' + err));

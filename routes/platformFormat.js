@@ -9,7 +9,7 @@ router.route('/returnFormats').post((req, res) => {
 
 
 router.route('/getNonUserPlatforms/:username/').post((req, res) => {
-    platformFormat.find({ owner: { $ne: req.params.username }, is_published: true }, 'plat_name owner is_public privacy_password cover_photo pages _id').skip(req.body.index).limit(req.body.max)
+    platformFormat.find({ owner: { $ne: req.params.username }, $or:[{"plat_name": { $regex : req.body.userSearch, $options: "i" }} , {"owner": { $regex : req.body.userSearch, $options: "i" }}], is_published: true, is_public: req.body.filterBy}, 'plat_name owner is_public privacy_password cover_photo pages _id').sort(req.body.argumentForAllPlatforms).skip(req.body.index).limit(req.body.max)
       .then(platformFormats => res.json(platformFormats))
       .catch(err => res.status(400).json('Error: ' + err));
 });

@@ -90,16 +90,23 @@ router.route('/addToPages').post((req, res) => {
 })
 
 //Specifically used for updating Platform's cover photo
-router.route('/update_cover_photo/:id').post((req, res) => {
-    platformFormat.findById(req.params.id)
-        .then(platformFormat => {
-         platformFormat.cover_photo = req.body.cover_photo;
-         platformFormat.save()
-                .then(() => res.json('Platform Format Updated!'))
-                .catch(err => res.status(400).json('Error: ' + err));
-        })
-        .catch(err => res.status(400).json('Error: ' + err));
-})
+router.route('/update_cover_photo').post((req, res) => {
+    platformFormat.updateOne(
+      {_id:req.body.platformID},
+      {$set: {cover_photo:req.body.newCoverPhoto}},
+      function(err,response)
+      {
+        if(err)
+        {
+          console.log(err)
+        }
+        else
+        {
+          res.send(response)
+        }
+      }
+    )
+  })
 
 router.route('/getPages/:id').get((req, res) => {
     platformFormat.findById(req.params.id, 'pages -_id')

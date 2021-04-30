@@ -9,6 +9,63 @@ router.route('/getAllPages').post((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
   });
 
+//update page name
+router.route('/updatePageName').post((req, res) => {
+    pageFormat.updateOne(
+      {_id:req.body.pageID},
+      {$set: {page_title:req.body.newPageName}},
+      function(err,response)
+      {
+        if(err)
+        {
+          console.log(err)
+        }
+        else
+        {
+          res.send(response)
+        }
+      }
+    )
+  })
+
+
+//update prompt
+router.route('/updatePrompt').post((req, res) => {
+    pageFormat.updateOne(
+      {_id:req.body.pageID},
+      {$set: {prompt:req.body.newPrompt}},
+      function(err,response)
+      {
+        if(err)
+        {
+          console.log(err)
+        }
+        else
+        {
+          res.send(response)
+        }
+      }
+    )
+  })
+
+//update platform privacy
+router.route('/updatePageType').post((req, res) => {
+    pageFormat.updateOne(
+      {_id:req.body.pageID},
+      {$set: {type:req.body.newPageType}},
+      function(err,response)
+      {
+        if(err)
+        {
+          console.log(err)
+        }
+        else
+        {
+          res.send(response)
+        }
+      }
+    )
+  })
 router.route('/getSpecificPage/:id').get((req, res) => {
     pageFormat.findById(req.params.id)
       .then(pageFormat => res.json(pageFormat))

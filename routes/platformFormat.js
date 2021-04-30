@@ -108,6 +108,25 @@ router.route('/update_cover_photo').post((req, res) => {
     )
   })
 
+//update platform name
+router.route('/updatePlatName').post((req, res) => {
+  platformFormat.updateOne(
+    {_id:req.body.platformID},
+    {$set: {plat_name:req.body.newPlatName}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 router.route('/getPages/:id').get((req, res) => {
     platformFormat.findById(req.params.id, 'pages -_id')
       .then(platformFormat => res.json(platformFormat))

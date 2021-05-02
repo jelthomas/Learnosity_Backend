@@ -35,4 +35,11 @@ router.route('/getSpecificCategoryFormat/:id').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//gets pages 
+router.route('/getPages/:id').get((req, res) => {
+  categoryFormat.findById(req.params.id, 'pages -_id')
+    .then(categoryFormat => res.json(categoryFormat))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
 module.exports = router;

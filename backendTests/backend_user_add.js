@@ -27,9 +27,11 @@ describe('insert', () => {
     const password = "test_password";
     const security_question = "What was the name of your first pet?";
     const security_answer = "Rex";
+    const created_platforms= [];
     const total_time_played = 0;
-    const completed_platforms = 0;
+    const completed_categories = 0;
     const experience_points = 0;
+    const favorited_platforms = [];
 
     const newUser = new user({
       username, 
@@ -37,9 +39,11 @@ describe('insert', () => {
       password,
       security_question,
       security_answer,
+      created_platforms,
       total_time_played,
-      completed_platforms,
-      experience_points
+      completed_categories,
+      experience_points,
+      favorited_platforms
     });
 
     await users.insertOne(newUser);

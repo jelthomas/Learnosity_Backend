@@ -1,3 +1,4 @@
+const { Decimal128 } = require('bson');
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
@@ -36,7 +37,6 @@ const userSchema = new Schema({
         default: false
     },
     created_platforms: [{type: mongoose.Schema.Types.ObjectId}],
-    learned_platforms: [{type: mongoose.Schema.Types.ObjectId}],
     profile_picture: {
         type: String,
         default:""
@@ -46,7 +46,14 @@ const userSchema = new Schema({
         required: true, 
         default: 0
     },
-   completed_platforms: {
+
+    total_accuracy:{
+        type: Decimal128, 
+        required: true, 
+        default: 0.0
+    },
+    //completed_categories keep track of completed categories
+    completed_categories: {
         type: Number, 
         required: true, 
         default: 0
@@ -55,7 +62,9 @@ const userSchema = new Schema({
         type: Number, 
         require: true,
         default: 0
-    }
+    },
+    //array of platform formats (the ones you favorited)
+    favorited_platforms: [{type: mongoose.Schema.Types.ObjectId}]
 }, {
     timestamps: true,
 });

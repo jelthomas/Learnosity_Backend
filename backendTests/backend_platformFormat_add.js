@@ -27,7 +27,7 @@ describe('insert', () => {
     const is_public = true;
     const privacy_password = "";
     const cover_photo = "";
-    const pages = [];
+    const categories = [];
     const is_published = true;
 
     const newPlatformFormat = new platformFormat({
@@ -36,7 +36,7 @@ describe('insert', () => {
      is_public,
      privacy_password,
      cover_photo,
-     pages,
+     categories,
      is_published,
     });
 

@@ -38,13 +38,31 @@ router.route('/addToPages').post((req, res) => {
       .then( () => res.json({status: "Added to pages array!"}) )
       .catch(err => console.log("ERROR!! " + err))});
 
+//add category to category array
+router.route('/addToCategories/').post((req, res) => {
+  platformFormat.updateOne(
+    {_id:req.body.platform_format_id},
+    {$addToSet: {categories:[req.body.category_id]}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
  router.route('/add').post((req, res) => {
     const plat_name = req.body.plat_name;
     const owner = req.body.owner;
     const is_public = req.body.is_public;
     const privacy_password = req.body.privacy_password;
     const cover_photo = req.body.cover_photo;
-    const pages = req.body.pages;
+    const categories = req.body.categories;
     const is_published = req.body.is_published;
     
     const newplatformFormat = new platformFormat({
@@ -53,7 +71,7 @@ router.route('/addToPages').post((req, res) => {
      is_public,
      privacy_password,
      cover_photo,
-     pages,
+     categories,
      is_published,
     });
 

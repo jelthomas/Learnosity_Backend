@@ -13,6 +13,7 @@ const platformFormatSchema = new Schema({
         type: String,
         required: true
     },
+    //unsure if we want platforms to still be public private 
     is_public: {
         type: Boolean, 
         required:  function() {
@@ -29,7 +30,8 @@ const platformFormatSchema = new Schema({
         type: String,
         default: ""
     },
-    pages: [mongoose.Schema.Types.ObjectId],
+    //storing categories for each platform
+    categories: [mongoose.Schema.Types.ObjectId],
     is_published: {
         type: Boolean,
         default: false,

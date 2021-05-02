@@ -19,14 +19,19 @@ connection.once('open', () => {
   console.log("MongoDB database connection established successfully");
 });
 
-const platformDataRouter = require('./routes/platformData');
+//const platformDataRouter = require('./routes/platformData');
 const userRouter = require('./routes/user');
 const pageFormatRouter = require('./routes/pageFormat');
 const platformFormatRouter = require('./routes/platformFormat');
-app.use('/platformData', platformDataRouter);
+const categoryDataRouter = require('./routes/categoryData')
+const categoryFormatRouter = require('./routes/categoryFormat')
+
+//app.use('/platformData', platformDataRouter);
 app.use('/user', userRouter);
 app.use('/platformFormat', platformFormatRouter)
 app.use('/pageFormat', pageFormatRouter);
+app.use('/categoryData',categoryDataRouter);
+app.use('/categoryFormat',categoryFormatRouter);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);

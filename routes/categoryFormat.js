@@ -42,4 +42,59 @@ router.route('/getPages/:id').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//Used for updating category format's cover photo
+router.route('/update_category_photo').post((req, res) => {
+  categoryFormat.updateOne(
+    {_id:req.body.categoryID},
+    {$set: {category_photo:req.body.newCategoryPhoto}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//update category name
+router.route('/updateCatName').post((req, res) => {
+  categoryFormat.updateOne(
+    {_id:req.body.categoryID},
+    {$set: {category_name:req.body.newCatName}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+router.route('/addToPages/').post((req, res) => {
+  categoryFormat.updateOne(
+    {_id:req.body.category_format_id},
+    {$addToSet: {pages:[req.body.page_format_id]}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
 module.exports = router;

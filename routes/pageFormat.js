@@ -109,6 +109,62 @@ router.route('/add').post((req, res) => {
    .catch(err => res.status(400).json('Error: ' + err));
 });
 
+router.route('/addToMCC/').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.page_format_id},
+    {$push: {multiple_choices: req.body.value}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//update multiple choice answer
+router.route('/updateMultipleChoiceAnswer').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},
+    {$set: {multiple_choice_answer:req.body.newMCAnswer}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//update multiple choice choice
+router.route('/updateMultipleChoiceChoice').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},
+    {$set: {multiple_choices:req.body.newChoices}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 router.route('/update/:id').post((req, res) => {
     pageFormat.findById(req.params.id)
         .then(pageFormat => {

@@ -42,4 +42,23 @@ router.route('/getPages/:id').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//Increment times_played
+router.route('/increment_times_played').post((req, res) => {
+  categoryFormat.updateOne(
+    {_id: req.body._id},
+    {$set: {times_played: req.body.times_played}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 module.exports = router;

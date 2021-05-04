@@ -2,7 +2,7 @@ const router = require('express').Router();
 let platformFormat = require('../models/platformFormat.model');
 
 router.route('/returnFormats').post((req, res) => {
-    platformFormat.find({_id: {$in : req.body.ids}, is_published: true}, 'plat_name owner is_public privacy_password cover_photo pages')
+    platformFormat.find({_id: {$in : req.body.ids}, is_published: true}, 'plat_name owner is_public privacy_password cover_photo _id')
       .then(platformFormats => res.json(platformFormats))
       .catch(err => res.status(400).json('Error: ' + err));
   });

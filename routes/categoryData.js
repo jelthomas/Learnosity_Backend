@@ -24,12 +24,70 @@ router.route('/add').post((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
   });
 
-//get specific Category Data current progress pages for user id and platform id
+//get specific Category Data current progress pages, is_completed, and completed_pages for user id and platform id
 router.route('/getCategoryDataCurrentProgressPages').post((req, res) => {
-  categoryData.find({$and:[{user_id: req.body.id},{category_id:req.body.catid}]}, 'currentProgress_pages -_id')
+  categoryData.find({$and:[{user_id: req.body.id},{category_id:req.body.catid}]}, 'currentProgress_pages is_completed completed_pages -_id')
     .then(platformDatas => res.json(platformDatas[0]))
     .catch(err => res.status(400).json('Error: ' + err));
 });
+
+//get specific Category Data accuracy for user id and platform id
+router.route('/getAccuracy_and_completed_pages').post((req, res) => {
+  categoryData.find({$and:[{user_id: req.body.id},{category_id: req.body.cat_id}]}, 'accuracy completed_pages -_id')
+    .then(platformDatas => {res.json(platformDatas[0])})
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+//get all Category Data for all category_format IDs for that User
+router.route('/getAllCategoryData').post((req, res) => {
+  categoryData.find({ category_id: {$in : req.body.categories_id}, user_id: req.body.user_id})
+    .then(categoriesData => {res.json(categoriesData)})
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+//increment accuracy by
+router.route('/increment_accuracy_by').post((req, res) =>{
+  categoryData.updateOne(
+    {user_id: req.body.user_id, category_id: req.body.cat_id},
+    {$inc : {'accuracy' : req.body.inc}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//divide accuracy by
+router.route('/divide_accuracy').post((req, res) =>{
+  var accuracy = parseInt(req.body.accuracy);
+  var completed_pages_len = parseInt(req.body.completed_pages_len);
+  var new_accuracy = (accuracy/completed_pages_len).toFixed(2);
+  categoryData.updateOne(
+    {user_id: req.body.user_id, category_id: req.body.cat_id},
+    {$set : {'accuracy' : new_accuracy}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 
 //update completed page and current progress
 router.route('/updatePageArrays/').post((req, res) => {
@@ -77,6 +135,25 @@ router.route('/updateCurrentProgress/').post((req, res) => {
   categoryData.updateOne(
     {user_id:req.body.user_id,category_id:req.body.cat_id},
     {$addToSet: {currentProgress_pages:[req.body.page_id]}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//Clear current_progress array
+router.route('/clearCurrentProgress/').post((req, res) => {
+  categoryData.updateOne(
+    {user_id: req.body.user_id, category_id: req.body.category_format_id},
+    {$set: {currentProgress_pages: []}},
     function(err,response)
     {
       if(err)

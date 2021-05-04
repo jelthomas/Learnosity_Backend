@@ -64,7 +64,8 @@ const userSchema = new Schema({
         default: 0
     },
     //array of platform formats (the ones you favorited)
-    favorited_platforms: [{type: mongoose.Schema.Types.ObjectId}]
+    favorited_platforms: [{type: mongoose.Schema.Types.ObjectId}],
+    recent_platforms: [{type: mongoose.Schema.Types.ObjectId}]
 }, {
     timestamps: true,
 });

@@ -14,6 +14,10 @@ const categoryFormatSchema = new Schema({
         default: ""
     },
     pages: [mongoose.Schema.Types.ObjectId],
+    times_played: {
+        type: Number,
+        default: 0
+    }
 }, {
   timestamps: true,
 });

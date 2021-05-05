@@ -165,6 +165,42 @@ router.post('/updatePassword/:identifier',(req, res) => {
   })
 })
 
+router.route('/updateRecentlyPlayed').post((req, res) => {
+  user.updateOne(
+    {_id:req.body.userID},
+    {$set: {recent_platforms: req.body.recent_platforms}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+router.route('/updateFavoritePlatforms').post((req, res) => {
+  user.updateOne(
+    {_id:req.body.userID},
+    {$set: {favorited_platforms: req.body.fav_plats}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 router.route('/updateProfilePicture/:id').post((req, res) => {
   user.findById(req.params.id)
       .then(user => {

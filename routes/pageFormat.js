@@ -127,6 +127,24 @@ router.route('/addToMCC/').post((req, res) => {
   )
 })
 
+router.route('/addToMP/').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.page_format_id},
+    {$set: req.body.newPair},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 //update multiple choice answer
 router.route('/updateMultipleChoiceAnswer').post((req, res) => {
   pageFormat.updateOne(
@@ -151,6 +169,25 @@ router.route('/updateMultipleChoiceChoice').post((req, res) => {
   pageFormat.updateOne(
     {_id:req.body.pageID},
     {$set: {multiple_choices:req.body.newChoices}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//updating matching pair
+router.route('/updateMatchingPair').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},
+    {$set: {matching_pairs:req.body.newMatching}},
     function(err,response)
     {
       if(err)

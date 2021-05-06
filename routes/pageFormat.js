@@ -87,6 +87,7 @@ router.route('/add').post((req, res) => {
    const multiple_choice_answer = req.body.multiple_choice_answer;
    const matching_pairs = req.body.matching_pairs;
    const fill_in_the_blank_answers = req.body.fill_in_the_blank_answers;
+   const fill_in_the_blank_prompt = req.body.fill_in_the_blank_prompt;
    const clock = req.body.clock;
    const timer_answers = req.body.timer_answers;
    const order = req.body.order;
@@ -99,6 +100,7 @@ router.route('/add').post((req, res) => {
     multiple_choice_answer,
     matching_pairs,
     fill_in_the_blank_answers,
+    fill_in_the_blank_prompt,
     clock,
     timer_answers,
     order
@@ -202,6 +204,63 @@ router.route('/updateMatchingPair').post((req, res) => {
   )
 })
 
+//updating fib
+router.route('/updatefibAnswer').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},
+    {$set: {fill_in_the_blank_answers:req.body.newfibAnswers}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//updating fib
+router.route('/updatefibPromptAnswer').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},
+    {$set: {fill_in_the_blank_answers:req.body.newfibAnswers, fill_in_the_blank_prompt : req.body.newfibPrompt}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//updating whole page
+router.route('/updateMC').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},
+    {$set: {type:req.body.newType, multiple_choices : req.body.newMCC,multiple_choice_answer:req.body.newMCA}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 router.route('/update/:id').post((req, res) => {
     pageFormat.findById(req.params.id)
         .then(pageFormat => {
@@ -213,6 +272,7 @@ router.route('/update/:id').post((req, res) => {
             pageFormat.multiple_choice_answer = req.body.multiple_choice_answer;
             pageFormat.matching_pairs = req.body.matching_pairs;
             pageFormat.fill_in_the_blank_answers = req.body.fill_in_the_blank_answers;
+            pageFormat.fill_in_the_blank_prompt = req.body.fill_in_the_blank_prompt;
             pageFormat.clock = req.body.clock;
             pageFormat.timer_answers = req.body.timer_answers;
             pageFormat.order = req.body.order;

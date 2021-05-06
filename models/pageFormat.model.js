@@ -46,6 +46,10 @@ const pageFormatSchema = new Schema({
           required: function() {
           return this.type === "Matching"
      }},
+     fill_in_the_blank_prompt : {
+          type:String,
+          default: ""
+     },
      fill_in_the_blank_answers: {
           type: Map, 
           of: String, 

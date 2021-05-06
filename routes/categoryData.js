@@ -168,6 +168,26 @@ router.route('/clearCurrentProgress/').post((req, res) => {
   )
 })
 
+//Update updatedAt field
+router.route('/updatedAt').post((req, res) => {
+  var d = new Date();
+  categoryData.updateOne(
+    {user_id: req.body.user_id, category_id: req.body.category_format_id},
+    {$set: {updatedAt: d}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 //get specific category Data for user id and platform id
 router.route('/getSpecificCategoryData').post((req, res) => {
   categoryData.find({$and:[{user_id: req.body.id},{category_id:req.body.catid}]})

@@ -14,6 +14,12 @@ router.route('/getNonUserPlatforms/:username/').post((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//Gets user's created platforms
+router.route('/getCreatedPlatforms/:username/').post((req, res) => {
+  platformFormat.find({ owner: req.params.username}, 'plat_name owner is_public privacy_password cover_photo _id')
+    .then(platformFormats => res.json(platformFormats))
+    .catch(err => res.status(400).json('Error: ' + err));
+});
 
 //gets specific platform format 
 router.route('/getSpecificPlatformFormat/:id').get((req, res) => {

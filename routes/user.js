@@ -201,6 +201,24 @@ router.route('/updateFavoritePlatforms').post((req, res) => {
   )
 })
 
+router.route('/updateCreatedPlatforms').post((req, res) => {
+  user.updateOne(
+    {_id:req.body.userID},
+    {$addToSet: {created_platforms: [req.body.newPlat]}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 router.route('/updateProfilePicture/:id').post((req, res) => {
   user.findById(req.params.id)
       .then(user => {

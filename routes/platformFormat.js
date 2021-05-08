@@ -206,6 +206,28 @@ router.route('/updatePlatPassword').post((req, res) => {
     }
   )
 })
+//update whole platform with submit button 
+router.route('/updateWholePlat').post((req, res) => {
+  platformFormat.updateOne(
+    {_id:req.body.platformID},  
+    {$set: {plat_name:req.body.newPlatName,
+    cover_photo:req.body.newCoverPhoto,
+    is_published:req.body.newPublishStatus,
+    is_public:req.body.newPrivacyStatus,
+    privacy_password:req.body.newPlatPassword}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
 
 router.route('/getPages/:id').get((req, res) => {
     platformFormat.findById(req.params.id, 'pages -_id')

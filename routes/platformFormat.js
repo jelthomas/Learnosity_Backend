@@ -1,5 +1,7 @@
 const router = require('express').Router();
 let platformFormat = require('../models/platformFormat.model');
+let categoryData = require('../models/categoryData.model');
+let categoryFormat = require('../models/categoryFormat.model'); 
 
 router.route('/returnFormats').post((req, res) => {
     platformFormat.find({_id: {$in : req.body.ids}, is_published: true}, 'plat_name owner is_public privacy_password cover_photo _id')
@@ -235,4 +237,49 @@ router.route('/getPages/:id').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
+//remove value from platform format, then delete from category format, then delete category datas
+router.route('/removeCategory/').post((req, res) => {
+  platformFormat.updateOne(
+    {_id:req.body.platform_format_id},
+    {$pull : {categories :req.body.category_format_id}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        categoryData.deleteMany(
+          {category_id : req.body.category_format_id},
+          function(error,data)
+          {
+            if(error)
+            {
+              console.log(error)
+              
+            }
+            else
+            {
+              categoryFormat.findByIdAndRemove(
+                {_id:req.body.category_format_id},
+                function(err2,res2)
+                {
+                  if(err2)
+                  {
+                    console.log(err2)
+                  }
+                  else
+                  {
+                    console.log(res2)
+                  }
+                }
+              )
+            }
+          }
+        )
+      }
+    }
+  )
+})
 module.exports = router;

@@ -1,5 +1,7 @@
 const router = require('express').Router();
 let pageFormat = require('../models/pageFormat.model');
+let categoryData = require('../models/categoryData.model');
+let categoryFormat = require('../models/categoryFormat.model');
 
 
 //get pageFormats using array of pageFormatID
@@ -284,4 +286,201 @@ router.route('/update/:id').post((req, res) => {
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
+//update whole page when its MC Type with submit button 
+router.route('/updateWholeMCPage').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},  
+    {$set: {prompt:req.body.newPrompt,
+    type : req.body.newType,
+    page_title:req.body.newPageTitle,
+    multiple_choices:req.body.newMCC,
+    multiple_choice_answer:req.body.newMCA}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//update whole page when its FIB Type with submit button 
+router.route('/updateWholeFIBPage').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},  
+    {$set: {type:req.body.newType,
+    page_title:req.body.newPageTitle,
+    prompt:req.body.newPrompt,
+    matching_pairs : req.body.matching_pairs}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+router.route('/updateWholeMatchingPage').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},  
+    {$set: {type:req.body.newType,
+    page_title:req.body.newPageTitle,
+    prompt:req.body.newPrompt,
+    matching_pairs : req.body.newMatchingPairs}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+router.route('/updateWholeTimerPage').post((req, res) => {
+  pageFormat.updateOne(
+    {_id:req.body.pageID},  
+    {$set: {type:req.body.newType,
+    page_title:req.body.newPageTitle,
+    prompt:req.body.newPrompt,
+    timer_answers : req.body.newTimer}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//remove page from page Schema and categoryData Schema
+// router.route('/removePage/').post((req, res) => {
+//   pageFormat.findByIdAndRemove(
+//     {_id:req.body.page_format_id},
+//     function(err,response)
+//     {
+//       if(err)
+//       {
+//         console.log(err)
+//       }
+//       else
+//       {
+//         categoryData.updateMany(
+//           {$pull : {completed_pages :req.body.page_format_id},
+//           function(error,res)
+//           {
+//             if(error)
+//             {
+//               console.log(error)
+//             }
+//             else
+//             {
+//               console.log(res)
+//             }
+//           }
+//         )
+//       }
+//     }
+//   )
+// })
+
+// router.route('/removePage/').post((req, res) => {
+//   pageFormat.findByIdAndRemove(
+//     {_id:req.body.page_format_id},
+//     function(err,response)
+//     {
+//       if(err)
+//       {
+//         console.log(err)
+//       }
+//       else
+//       {
+//         categoryData.updateMany(
+//           {$pull : {completed_pages :req.body.page_format_id},
+//           function(error,res)
+//           {
+//             if(error)
+//             {
+//               console.log(error)
+//             }
+//             else
+//             {
+//               console.log(res)
+//             }
+//           }
+//           }
+//         )
+//       }
+//     }
+//   )
+// })
+
+router.route('/removePage/').post((req, res) => {
+  pageFormat.findByIdAndRemove(
+    {_id:req.body.page_format_id},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        categoryFormat.updateMany(
+          {},
+          {$pull : {pages :req.body.page_format_id}},
+          function(error,data)
+          {
+            if(error)
+            {
+              console.log(error)
+              
+            }
+            else
+            {
+              console.log(data)
+              categoryData.updateMany(
+                {},
+                {$pull : {completed_pages : req.body.page_format_id,
+                  currentProgress_pages : req.body.page_format_id
+                }},
+                function(err2,res2)
+                {
+                  if(err2)
+                  {
+                    console.log(err2)
+                  }
+                  else
+                  {
+                    console.log(res2)
+                  }
+                }
+              )
+            }
+          }
+        )
+      }
+    }
+  )
+})
 module.exports = router;

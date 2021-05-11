@@ -1,5 +1,6 @@
 const router = require('express').Router();
 let categoryFormat = require('../models/categoryFormat.model');
+let pageFormat = require('../models/pageFormat.model');
 
 router.route('/add').post((req, res) => {
     const category_name = req.body.cat_name;
@@ -117,4 +118,25 @@ router.route('/addToPages/').post((req, res) => {
     }
   )
 })
+
+//update whole platform with submit button 
+router.route('/updateWholeCat').post((req, res) => {
+  categoryFormat.updateOne(
+    {_id:req.body.categoryID},  
+    {$set: {category_name:req.body.newCategoryName,
+    category_photo:req.body.newCategoryPhoto,}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
 module.exports = router;

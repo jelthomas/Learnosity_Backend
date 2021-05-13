@@ -315,7 +315,8 @@ router.route('/updateWholeFIBPage').post((req, res) => {
     {_id:req.body.pageID},  
     {$set: {type:req.body.newType,
     page_title:req.body.newPageTitle,
-    fill_in_the_blank_prompt:req.body.newfibPrompt}},
+    fill_in_the_blank_prompt:req.body.newfibPrompt,
+    fill_in_the_blank_answers:req.body.newfibAnswers}},
     function(err,response)
     {
       if(err)

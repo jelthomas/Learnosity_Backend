@@ -66,13 +66,11 @@ router.route('/increment_accuracy_by').post((req, res) =>{
 })
 
 //divide accuracy by
-router.route('/divide_accuracy').post((req, res) =>{
-  var accuracy = parseInt(req.body.accuracy);
-  var completed_pages_len = parseInt(req.body.completed_pages_len);
-  var new_accuracy = (accuracy/completed_pages_len).toFixed(2);
+router.route('/set_accuracy').post((req, res) =>{
+  var accuracy = parseFloat(req.body.accuracy);
   categoryData.updateOne(
     {user_id: req.body.user_id, category_id: req.body.cat_id},
-    {$set : {'accuracy' : new_accuracy}},
+    {$set : {'accuracy' : accuracy}},
 
     function(err,response)
     {

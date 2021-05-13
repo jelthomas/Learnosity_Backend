@@ -257,5 +257,67 @@ router.post('/compareSecurityAnswer/:identifier', (req,res)=>{
   })
 });
 
+//increment total accuracy by
+router.route('/increment_total_accuracy_by').post((req, res) =>{
+  user.updateOne(
+    {_id: req.body.user_id},
+    {$inc : {'total_accuracy' : req.body.inc}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment experience_points
+router.route('/increment_experience_points_by').post((req, res) =>{
+  user.updateOne(
+    {_id: req.body.user_id},
+    {$inc : {'experience_points' : req.body.inc}},
+
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment completed categories by 1
+router.route('/increment_completed_categories_by').post((req, res) =>{
+  user.updateOne(
+    {_id: req.body.user_id},
+    {$inc : {'completed_categories' : 1}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+
 
 module.exports = router;

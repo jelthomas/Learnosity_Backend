@@ -2,6 +2,7 @@ const router = require('express').Router();
 let platformFormat = require('../models/platformFormat.model');
 let categoryData = require('../models/categoryData.model');
 let categoryFormat = require('../models/categoryFormat.model'); 
+let user = require('../models/user.model');
 
 router.route('/returnFormats').post((req, res) => {
     platformFormat.find({_id: {$in : req.body.ids}, is_published: true}, 'plat_name owner is_public privacy_password cover_photo _id')
@@ -272,6 +273,64 @@ router.route('/removeCategory/').post((req, res) => {
                   else
                   {
                     console.log(res2)
+                  }
+                }
+              )
+            }
+          }
+        )
+      }
+    }
+  )
+})
+
+//remove platforms, removes associated category format and category data 
+router.route('/removePlatform/').post((req, res) => {
+  platformFormat.deleteOne(
+    {_id:req.body.platform_format_id},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        user.updateMany(
+          {$pull : {recent_platforms :req.body.platform_format_id}},
+          function(error,data)
+          {
+            if(error)
+            {
+              console.log(error)
+              
+            }
+            else
+            {
+              categoryFormat.deleteMany(
+                {_id : {$in : req.body.category_format_ids}},
+                function(err2,res2)
+                {
+                  if(err2)
+                  {
+                    console.log(err2)
+                  }
+                  else
+                  {
+                    categoryData.deleteMany(
+                      {category_id:{$in : req.body.category_format_ids}},
+                      function(err3,res3)
+                      {
+                        if(err3)
+                        {
+                          console.log(err3)
+                        }
+                        else
+                        {
+                          console.log(res3)
+                        }
+                      }
+                    )
                   }
                 }
               )

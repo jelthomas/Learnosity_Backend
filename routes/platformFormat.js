@@ -60,6 +60,9 @@ router.route('/addToCategories/').post((req, res) => {
       }
       else
       {
+        console.log("Added category!");
+        console.log("Response: ");
+        console.log(response);
         res.send(response)
       }
     }
@@ -214,10 +217,49 @@ router.route('/updateWholePlat').post((req, res) => {
   platformFormat.updateOne(
     {_id:req.body.platformID},  
     {$set: {plat_name:req.body.newPlatName,
-    cover_photo:req.body.newCoverPhoto,
     is_published:req.body.newPublishStatus,
     is_public:req.body.newPrivacyStatus,
     privacy_password:req.body.newPlatPassword}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment times_played by 1
+router.route('/increment_times_played').post((req, res) =>{
+  platformFormat.updateOne(
+    {_id: req.body.plat_id},
+    {$inc : {'times_played' : 1}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment or decrement pages_length
+router.route('/increment_pages_length_by').post((req, res) =>{
+  platformFormat.updateOne(
+    {_id: req.body.plat_id},
+    {$inc : {'pages_length' : req.body.inc}},
+
     function(err,response)
     {
       if(err)
@@ -239,6 +281,55 @@ router.route('/getPages/:id').get((req, res) => {
 });
 
 //remove value from platform format, then delete from category format, then delete category datas
+// router.route('/removeCategory/').post((req, res) => {
+//   platformFormat.updateOne(
+//     {_id:req.body.platform_format_id},
+//     {$pull : {categories :req.body.category_format_id}},
+//     function(err,response)
+//     {
+//       if(err)
+//       {
+//         console.log(err)
+//       }
+//       else
+//       {
+//         categoryData.deleteMany(
+//           {category_id : req.body.category_format_id},
+//           function(error,data)
+//           {
+//             if(error)
+//             {
+//               console.log(error)
+              
+//             }
+//             else
+//             {
+//               categoryFormat.findByIdAndRemove(
+//                 {_id:req.body.category_format_id},
+//                 function(err2,res2)
+//                 {
+//                   if(err2)
+//                   {
+//                     console.log(err2)
+//                   }
+//                   else
+//                   {
+//                     console.log("DELETED!")
+//                     // console.log(res2)
+//                   }
+//                 }
+//               )
+//             }
+//           }
+//         )
+//       }
+//     }
+//   )
+// })
+
+
+
+
 router.route('/removeCategory/').post((req, res) => {
   platformFormat.updateOne(
     {_id:req.body.platform_format_id},
@@ -251,34 +342,8 @@ router.route('/removeCategory/').post((req, res) => {
       }
       else
       {
-        categoryData.deleteMany(
-          {category_id : req.body.category_format_id},
-          function(error,data)
-          {
-            if(error)
-            {
-              console.log(error)
-              
-            }
-            else
-            {
-              categoryFormat.findByIdAndRemove(
-                {_id:req.body.category_format_id},
-                function(err2,res2)
-                {
-                  if(err2)
-                  {
-                    console.log(err2)
-                  }
-                  else
-                  {
-                    console.log(res2)
-                  }
-                }
-              )
-            }
-          }
-        )
+        console.log("Removed category format ID from Platform Format Categories")
+        res.send(response);
       }
     }
   )
@@ -327,7 +392,7 @@ router.route('/removePlatform/').post((req, res) => {
                         }
                         else
                         {
-                          console.log(res3)
+                          res.send(res3);
                         }
                       }
                     )

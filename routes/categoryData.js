@@ -211,4 +211,26 @@ router.route('/setCompletedTrue/').post((req, res) => {
     }
   )
 })
+
+//Deletes Category Data
+router.route('/removeCategoryDatas').post((req,res) =>{
+  categoryData.deleteMany(
+    {category_id : req.body.category_format_id},
+    function(error,data)
+    {
+      if(error)
+      {
+        console.log(error)
+        
+      }
+      else
+      {
+        console.log("Deleted category data")
+        res.send(data);
+      }
+    }
+  )
+})
+
+
 module.exports = router;

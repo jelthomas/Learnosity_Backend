@@ -36,6 +36,14 @@ const platformFormatSchema = new Schema({
         type: Boolean,
         default: false,
         required: true
+    },
+    times_played: {
+        type: Number,
+        default: 0
+    },
+    pages_length:{
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true,

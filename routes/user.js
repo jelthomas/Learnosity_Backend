@@ -6,6 +6,9 @@ router.use(cors());
 
 
 let user = require('../models/user.model');
+let platformFormat = require('../models/platformFormat.model');
+let categoryData = require('../models/categoryData.model');
+let categoryFormat = require('../models/categoryFormat.model'); 
 
 router.route('/getAllUsers').get((req, res) => {
     user.find()
@@ -219,17 +222,35 @@ router.route('/updateCreatedPlatforms').post((req, res) => {
   )
 })
 
-router.route('/updateProfilePicture/:id').post((req, res) => {
-  user.findById(req.params.id)
-      .then(user => {
-        user.profile_picture = req.body.profile_picture;
-
-          user.save()
-              .then(() => res.json('User Profile Picture Updated!'))
-              .catch(err => res.status(400).json('Error: ' + err));
-      })
-      .catch(err => res.status(400).json('Error: ' + err));
+router.route('/updateProfilePicture').post((req, res) => {
+  user.updateOne(
+    {_id:req.body.user_id},
+    {$set: {profile_picture:req.body.newPicture}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
 })
+
+// router.route('/updateProfilePicture/:id').post((req, res) => {
+//   user.findById(req.params.id)
+//       .then(user => {
+//         user.profile_picture = req.body.profile_picture;
+
+//           user.save()
+//               .then(() => res.json('User Profile Picture Updated!'))
+//               .catch(err => res.status(400).json('Error: ' + err));
+//       })
+//       .catch(err => res.status(400).json('Error: ' + err));
+// })
 
 router.post('/compareSecurityAnswer/:identifier', (req,res)=>{
   user.findOne({$or:[{username: req.params.identifier},{email:req.params.identifier}]})
@@ -313,6 +334,62 @@ router.route('/increment_completed_categories_by').post((req, res) =>{
       else
       {
         res.send(response)
+      }
+    }
+  )
+})
+
+router.route('/removeUser').post((req,res) => {
+  categoryData.deleteMany(
+    {category_id : {$in : req.body.category_format_ids}},
+    function(err,res)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        categoryFormat.deleteMany(
+          {_id : {$in : req.body.category_format_ids}},
+          function(err2,res2)
+          {
+            if(err2)
+            {
+              console.log(err2)
+            }
+            else
+            {
+              user.updateMany(
+                {$pull : {recent_platforms : {$in: req.body.created_platform_ids},favorited_platforms : {$in: req.body.created_platform_ids} }},
+                function(err3,res3)
+                {
+                  if(err3)
+                  {
+                    console.log(err3)
+                  }
+                  else
+                  {
+                    user.deleteOne(
+                      {_id:req.body.user_format_id},
+                      function(err4,res4)
+                      {
+                        if(err4)
+                        {
+                          console.log(err4)
+                        }
+                        else
+                        {
+                          res.send(res4)
+                        }
+                      }
+                    )
+                  }
+                }
+              )
+            }
+          }
+        )
       }
     }
   )

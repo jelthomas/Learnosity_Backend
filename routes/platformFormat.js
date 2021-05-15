@@ -327,7 +327,12 @@ router.route('/getPages/:id').get((req, res) => {
 //   )
 // })
 
-
+//get all platforms 
+router.route('/getAllPlatforms').post((req, res) => {
+  platformFormat.find({ _id: {$in : req.body.created_platform_ids}})
+    .then(platformFormats => {res.json(platformFormats)})
+    .catch(err => res.status(400).json('Error: ' + err));
+});
 
 
 router.route('/removeCategory/').post((req, res) => {

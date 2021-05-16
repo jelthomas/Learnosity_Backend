@@ -354,6 +354,7 @@ router.route('/removeCategory/').post((req, res) => {
   )
 })
 
+
 //remove platforms, removes associated category format and category data 
 router.route('/removePlatform/').post((req, res) => {
   platformFormat.deleteOne(

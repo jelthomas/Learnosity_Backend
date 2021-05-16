@@ -339,6 +339,23 @@ router.route('/increment_completed_categories_by').post((req, res) =>{
   )
 })
 
+//Remove from user's recently played platforms
+router.route('/remove_from_recently_played').post((req, res) => {
+  user.updateMany(
+    {$pull : {recent_platforms :req.body.platform_format_id}},
+    function(error,data)
+    {
+      if(error)
+      {
+        console.log(error)
+        
+      }
+      else
+      {
+        res.send(data);
+      }
+})})
+
 router.route('/removeUser').post((req,res) => {
   categoryData.deleteMany(
     {category_id : {$in : req.body.category_format_ids}},

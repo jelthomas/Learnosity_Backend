@@ -225,7 +225,6 @@ router.route('/removeCategoryDatas').post((req,res) =>{
       }
       else
       {
-        console.log("Deleted category data")
         res.send(data);
       }
     }

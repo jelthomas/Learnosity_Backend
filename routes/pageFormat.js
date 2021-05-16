@@ -373,67 +373,6 @@ router.route('/updateWholeTimerPage').post((req, res) => {
   )
 })
 
-//remove page from page Schema and categoryData Schema
-// router.route('/removePage/').post((req, res) => {
-//   pageFormat.findByIdAndRemove(
-//     {_id:req.body.page_format_id},
-//     function(err,response)
-//     {
-//       if(err)
-//       {
-//         console.log(err)
-//       }
-//       else
-//       {
-//         categoryData.updateMany(
-//           {$pull : {completed_pages :req.body.page_format_id},
-//           function(error,res)
-//           {
-//             if(error)
-//             {
-//               console.log(error)
-//             }
-//             else
-//             {
-//               console.log(res)
-//             }
-//           }
-//         )
-//       }
-//     }
-//   )
-// })
-
-// router.route('/removePage/').post((req, res) => {
-//   pageFormat.findByIdAndRemove(
-//     {_id:req.body.page_format_id},
-//     function(err,response)
-//     {
-//       if(err)
-//       {
-//         console.log(err)
-//       }
-//       else
-//       {
-//         categoryData.updateMany(
-//           {$pull : {completed_pages :req.body.page_format_id},
-//           function(error,res)
-//           {
-//             if(error)
-//             {
-//               console.log(error)
-//             }
-//             else
-//             {
-//               console.log(res)
-//             }
-//           }
-//           }
-//         )
-//       }
-//     }
-//   )
-// })
 
 router.route('/delete_all_pages').post((req,res) => {
   pageFormat.deleteMany(

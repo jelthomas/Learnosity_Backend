@@ -130,7 +130,6 @@ router.route('/removeCategoryFormat').post((req,res) =>{
       }
       else
       {
-        console.log("Deleted Quiz!");
         res.send(res2);
       }
     }

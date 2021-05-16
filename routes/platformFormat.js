@@ -60,9 +60,6 @@ router.route('/addToCategories/').post((req, res) => {
       }
       else
       {
-        console.log("Added category!");
-        console.log("Response: ");
-        console.log(response);
         res.send(response)
       }
     }
@@ -280,52 +277,7 @@ router.route('/getPages/:id').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
-//remove value from platform format, then delete from category format, then delete category datas
-// router.route('/removeCategory/').post((req, res) => {
-//   platformFormat.updateOne(
-//     {_id:req.body.platform_format_id},
-//     {$pull : {categories :req.body.category_format_id}},
-//     function(err,response)
-//     {
-//       if(err)
-//       {
-//         console.log(err)
-//       }
-//       else
-//       {
-//         categoryData.deleteMany(
-//           {category_id : req.body.category_format_id},
-//           function(error,data)
-//           {
-//             if(error)
-//             {
-//               console.log(error)
-              
-//             }
-//             else
-//             {
-//               categoryFormat.findByIdAndRemove(
-//                 {_id:req.body.category_format_id},
-//                 function(err2,res2)
-//                 {
-//                   if(err2)
-//                   {
-//                     console.log(err2)
-//                   }
-//                   else
-//                   {
-//                     console.log("DELETED!")
-//                     // console.log(res2)
-//                   }
-//                 }
-//               )
-//             }
-//           }
-//         )
-//       }
-//     }
-//   )
-// })
+
 
 //get all platforms 
 router.route('/getAllPlatforms').post((req, res) => {
@@ -347,7 +299,6 @@ router.route('/removeCategory/').post((req, res) => {
       }
       else
       {
-        console.log("Removed category format ID from Platform Format Categories")
         res.send(response);
       }
     }

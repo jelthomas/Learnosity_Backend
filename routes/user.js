@@ -24,22 +24,6 @@ router.route('/getSecurityQuestion/:identifier').get((req, res) => {
     .catch(err => res.status(400).json('Error: ' + err));
 });
 
-// selects just the learned_platforms array for a specific user's ID
-// router.route('/getLearnedPlatforms/:id').get((req, res) => {
-//   user.findById(req.params.id).select('learned_platforms -_id')
-//     .then(user => res.json(user.learned_platforms))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-// adds a platformData ID to the learned_platforms array of the user (id => user's ID, learned_id => platformData ID)
-// router.route('/addLearnedPlatform').post((req, res) => {
-//   user.findByIdAndUpdate(req.body.id,
-//     { "$push": { "learned_platforms": req.body.learned_id } },
-//     { "new": true, "upsert": true }
-//     )
-//     .then( () => res.json({status: "Added to learned array!"}) )
-//     .catch(err => console.log("ERROR!! " + err))});
-
 router.route('/getID/:identifier').get((req, res) => {
   user.find({$or:[{username: req.params.identifier},{email:req.params.identifier}]}).select('_id')
     .then(user => res.json(user))

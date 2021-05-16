@@ -343,7 +343,7 @@ router.route('/remove_from_recently_played').post((req, res) => {
 router.route('/removeUser').post((req,res) => {
   categoryData.deleteMany(
     {category_id : {$in : req.body.category_format_ids}},
-    function(err,res)
+    function(err,response)
     {
       if(err)
       {
@@ -371,8 +371,8 @@ router.route('/removeUser').post((req,res) => {
                   }
                   else
                   {
-                    user.deleteOne(
-                      {_id:req.body.user_format_id},
+                    platformFormat.deleteMany(
+                      {_id:{$in: req.body.created_platform_ids}},
                       function(err4,res4)
                       {
                         if(err4)
@@ -381,7 +381,20 @@ router.route('/removeUser').post((req,res) => {
                         }
                         else
                         {
-                          res.send(res4)
+                          user.deleteOne(
+                            {_id:req.body.user_format_id},
+                            function(err5,res5)
+                            {
+                              if(err5)
+                              {
+                                console.log(err5)
+                              }
+                              else
+                              {
+                                res.send(res5)
+                              }
+                            }
+                          )
                         }
                       }
                     )

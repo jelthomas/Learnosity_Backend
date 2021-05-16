@@ -319,7 +319,7 @@ router.route('/removePlatform/').post((req, res) => {
       else
       {
         user.updateMany(
-          {$pull : {recent_platforms :req.body.platform_format_id}},
+          {$pull : {recent_platforms :req.body.platform_format_id, favorited_platforms : req.body.platform_format_id}},
           function(error,data)
           {
             if(error)

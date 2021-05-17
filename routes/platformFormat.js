@@ -5,7 +5,7 @@ let categoryFormat = require('../models/categoryFormat.model');
 let user = require('../models/user.model');
 
 router.route('/returnFormats').post((req, res) => {
-    platformFormat.find({_id: {$in : req.body.ids}, is_published: true}, 'plat_name owner is_public privacy_password cover_photo _id')
+    platformFormat.find({_id: {$in : req.body.ids}, is_published: true}, 'plat_name owner is_public privacy_password cover_photo categories_id').skip(req.body.index*10).limit(req.body.max)
       .then(platformFormats => res.json(platformFormats))
       .catch(err => res.status(400).json('Error: ' + err));
   });
@@ -19,7 +19,7 @@ router.route('/getNonUserPlatforms/:username/').post((req, res) => {
 
 //Gets user's created platforms
 router.route('/getCreatedPlatforms/:username/').post((req, res) => {
-  platformFormat.find({ owner: req.params.username}, 'plat_name owner is_public privacy_password cover_photo _id')
+  platformFormat.find({ owner: req.params.username}, 'plat_name owner is_public privacy_password cover_photo categories _id').skip(req.body.index*10).limit(req.body.max)
     .then(platformFormats => res.json(platformFormats))
     .catch(err => res.status(400).json('Error: ' + err));
 });

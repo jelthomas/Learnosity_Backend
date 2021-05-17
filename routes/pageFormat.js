@@ -358,7 +358,8 @@ router.route('/updateWholeTimerPage').post((req, res) => {
     {$set: {type:req.body.newType,
     page_title:req.body.newPageTitle,
     prompt:req.body.newPrompt,
-    timer_answers : req.body.newTimer}},
+    timer_answers : req.body.newTimer,
+    clock : req.body.newClock}},
     function(err,response)
     {
       if(err)

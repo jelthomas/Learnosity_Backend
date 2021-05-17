@@ -315,7 +315,8 @@ router.route('/updateWholeFIBPage').post((req, res) => {
     {_id:req.body.pageID},  
     {$set: {type:req.body.newType,
     page_title:req.body.newPageTitle,
-    fill_in_the_blank_prompt:req.body.newfibPrompt}},
+    fill_in_the_blank_prompt:req.body.newfibPrompt,
+    fill_in_the_blank_answers:req.body.newfibAnswers}},
     function(err,response)
     {
       if(err)
@@ -372,67 +373,20 @@ router.route('/updateWholeTimerPage').post((req, res) => {
   )
 })
 
-//remove page from page Schema and categoryData Schema
-// router.route('/removePage/').post((req, res) => {
-//   pageFormat.findByIdAndRemove(
-//     {_id:req.body.page_format_id},
-//     function(err,response)
-//     {
-//       if(err)
-//       {
-//         console.log(err)
-//       }
-//       else
-//       {
-//         categoryData.updateMany(
-//           {$pull : {completed_pages :req.body.page_format_id},
-//           function(error,res)
-//           {
-//             if(error)
-//             {
-//               console.log(error)
-//             }
-//             else
-//             {
-//               console.log(res)
-//             }
-//           }
-//         )
-//       }
-//     }
-//   )
-// })
 
-// router.route('/removePage/').post((req, res) => {
-//   pageFormat.findByIdAndRemove(
-//     {_id:req.body.page_format_id},
-//     function(err,response)
-//     {
-//       if(err)
-//       {
-//         console.log(err)
-//       }
-//       else
-//       {
-//         categoryData.updateMany(
-//           {$pull : {completed_pages :req.body.page_format_id},
-//           function(error,res)
-//           {
-//             if(error)
-//             {
-//               console.log(error)
-//             }
-//             else
-//             {
-//               console.log(res)
-//             }
-//           }
-//           }
-//         )
-//       }
-//     }
-//   )
-// })
+router.route('/delete_all_pages').post((req,res) => {
+  pageFormat.deleteMany(
+    {_id : {$in : req.body.all_pages}},
+    function(err2,res2)
+    {
+      if(err2){
+        console.log(err2);
+      }
+      else{
+        res.send(res2);
+      }
+    })
+})
 
 router.route('/removePage/').post((req, res) => {
   pageFormat.findByIdAndRemove(
@@ -457,7 +411,6 @@ router.route('/removePage/').post((req, res) => {
             }
             else
             {
-              console.log(data)
               categoryData.updateMany(
                 {},
                 {$pull : {completed_pages : req.body.page_format_id,
@@ -471,7 +424,7 @@ router.route('/removePage/').post((req, res) => {
                   }
                   else
                   {
-                    console.log(res2)
+                    res.send(res2);
                   }
                 }
               )

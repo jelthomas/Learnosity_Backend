@@ -6,6 +6,9 @@ router.use(cors());
 
 
 let user = require('../models/user.model');
+let platformFormat = require('../models/platformFormat.model');
+let categoryData = require('../models/categoryData.model');
+let categoryFormat = require('../models/categoryFormat.model'); 
 
 router.route('/getAllUsers').get((req, res) => {
     user.find()
@@ -20,22 +23,6 @@ router.route('/getSecurityQuestion/:identifier').get((req, res) => {
     .then(user => res.json(user))
     .catch(err => res.status(400).json('Error: ' + err));
 });
-
-// selects just the learned_platforms array for a specific user's ID
-// router.route('/getLearnedPlatforms/:id').get((req, res) => {
-//   user.findById(req.params.id).select('learned_platforms -_id')
-//     .then(user => res.json(user.learned_platforms))
-//     .catch(err => res.status(400).json('Error: ' + err));
-// });
-
-// adds a platformData ID to the learned_platforms array of the user (id => user's ID, learned_id => platformData ID)
-// router.route('/addLearnedPlatform').post((req, res) => {
-//   user.findByIdAndUpdate(req.body.id,
-//     { "$push": { "learned_platforms": req.body.learned_id } },
-//     { "new": true, "upsert": true }
-//     )
-//     .then( () => res.json({status: "Added to learned array!"}) )
-//     .catch(err => console.log("ERROR!! " + err))});
 
 router.route('/getID/:identifier').get((req, res) => {
   user.find({$or:[{username: req.params.identifier},{email:req.params.identifier}]}).select('_id')
@@ -219,17 +206,35 @@ router.route('/updateCreatedPlatforms').post((req, res) => {
   )
 })
 
-router.route('/updateProfilePicture/:id').post((req, res) => {
-  user.findById(req.params.id)
-      .then(user => {
-        user.profile_picture = req.body.profile_picture;
-
-          user.save()
-              .then(() => res.json('User Profile Picture Updated!'))
-              .catch(err => res.status(400).json('Error: ' + err));
-      })
-      .catch(err => res.status(400).json('Error: ' + err));
+router.route('/updateProfilePicture').post((req, res) => {
+  user.updateOne(
+    {_id:req.body.user_id},
+    {$set: {profile_picture:req.body.newPicture}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
 })
+
+// router.route('/updateProfilePicture/:id').post((req, res) => {
+//   user.findById(req.params.id)
+//       .then(user => {
+//         user.profile_picture = req.body.profile_picture;
+
+//           user.save()
+//               .then(() => res.json('User Profile Picture Updated!'))
+//               .catch(err => res.status(400).json('Error: ' + err));
+//       })
+//       .catch(err => res.status(400).json('Error: ' + err));
+// })
 
 router.post('/compareSecurityAnswer/:identifier', (req,res)=>{
   user.findOne({$or:[{username: req.params.identifier},{email:req.params.identifier}]})
@@ -256,6 +261,154 @@ router.post('/compareSecurityAnswer/:identifier', (req,res)=>{
     res.send("Error: " + err);
   })
 });
+
+//increment total accuracy by
+router.route('/increment_total_accuracy_by').post((req, res) =>{
+  user.updateOne(
+    {_id: req.body.user_id},
+    {$inc : {'total_accuracy' : req.body.inc}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment experience_points
+router.route('/increment_experience_points_by').post((req, res) =>{
+  user.updateOne(
+    {_id: req.body.user_id},
+    {$inc : {'experience_points' : req.body.inc}},
+
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment completed categories by 1
+router.route('/increment_completed_categories_by').post((req, res) =>{
+  user.updateOne(
+    {_id: req.body.user_id},
+    {$inc : {'completed_categories' : 1}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//Remove from user's recently played platforms
+router.route('/remove_from_recently_played').post((req, res) => {
+  user.updateMany(
+    {$pull : {recent_platforms :req.body.platform_format_id}},
+    function(error,data)
+    {
+      if(error)
+      {
+        console.log(error)
+        
+      }
+      else
+      {
+        res.send(data);
+      }
+})})
+
+router.route('/removeUser').post((req,res) => {
+  categoryData.deleteMany(
+    {category_id : {$in : req.body.category_format_ids}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        categoryFormat.deleteMany(
+          {_id : {$in : req.body.category_format_ids}},
+          function(err2,res2)
+          {
+            if(err2)
+            {
+              console.log(err2)
+            }
+            else
+            {
+              user.updateMany(
+                {$pull : {recent_platforms : {$in: req.body.created_platform_ids},favorited_platforms : {$in: req.body.created_platform_ids} }},
+                function(err3,res3)
+                {
+                  if(err3)
+                  {
+                    console.log(err3)
+                  }
+                  else
+                  {
+                    platformFormat.deleteMany(
+                      {_id:{$in: req.body.created_platform_ids}},
+                      function(err4,res4)
+                      {
+                        if(err4)
+                        {
+                          console.log(err4)
+                        }
+                        else
+                        {
+                          user.deleteOne(
+                            {_id:req.body.user_format_id},
+                            function(err5,res5)
+                            {
+                              if(err5)
+                              {
+                                console.log(err5)
+                              }
+                              else
+                              {
+                                res.send(res5)
+                              }
+                            }
+                          )
+                        }
+                      }
+                    )
+                  }
+                }
+              )
+            }
+          }
+        )
+      }
+    }
+  )
+})
+
 
 
 module.exports = router;

@@ -21,7 +21,6 @@ router.route('/add').post((req, res) => {
   });
 
 
-//get pageFormats using array of pageFormatID
 router.route('/getAllCategories').post((req, res) => {
   categoryFormat.find({ _id: {$in : req.body.categories_id}}).sort({order: 'asc'})
     .then(categoriesData => {res.json(categoriesData)})
@@ -114,6 +113,24 @@ router.route('/addToPages/').post((req, res) => {
       else
       {
         res.send(response)
+      }
+    }
+  )
+})
+
+//Deletes Category Format
+router.route('/removeCategoryFormat').post((req,res) =>{
+  categoryFormat.findByIdAndRemove(
+    {_id:req.body.category_format_id},
+    function(err2,res2)
+    {
+      if(err2)
+      {
+        console.log(err2)
+      }
+      else
+      {
+        res.send(res2);
       }
     }
   )

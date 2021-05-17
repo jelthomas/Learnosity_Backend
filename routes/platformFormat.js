@@ -2,6 +2,7 @@ const router = require('express').Router();
 let platformFormat = require('../models/platformFormat.model');
 let categoryData = require('../models/categoryData.model');
 let categoryFormat = require('../models/categoryFormat.model'); 
+let user = require('../models/user.model');
 
 router.route('/returnFormats').post((req, res) => {
     platformFormat.find({_id: {$in : req.body.ids}, is_published: true}, 'plat_name owner is_public privacy_password cover_photo categories_id').skip(req.body.index*10).limit(req.body.max)
@@ -213,10 +214,49 @@ router.route('/updateWholePlat').post((req, res) => {
   platformFormat.updateOne(
     {_id:req.body.platformID},  
     {$set: {plat_name:req.body.newPlatName,
-    cover_photo:req.body.newCoverPhoto,
     is_published:req.body.newPublishStatus,
     is_public:req.body.newPrivacyStatus,
     privacy_password:req.body.newPlatPassword}},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment times_played by 1
+router.route('/increment_times_played').post((req, res) =>{
+  platformFormat.updateOne(
+    {_id: req.body.plat_id},
+    {$inc : {'times_played' : 1}},
+
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        res.send(response)
+      }
+    }
+  )
+})
+
+//increment or decrement pages_length
+router.route('/increment_pages_length_by').post((req, res) =>{
+  platformFormat.updateOne(
+    {_id: req.body.plat_id},
+    {$inc : {'pages_length' : req.body.inc}},
+
     function(err,response)
     {
       if(err)
@@ -237,7 +277,16 @@ router.route('/getPages/:id').get((req, res) => {
       .catch(err => res.status(400).json('Error: ' + err));
 });
 
-//remove value from platform format, then delete from category format, then delete category datas
+
+
+//get all platforms 
+router.route('/getAllPlatforms').post((req, res) => {
+  platformFormat.find({ _id: {$in : req.body.created_platform_ids}})
+    .then(platformFormats => {res.json(platformFormats)})
+    .catch(err => res.status(400).json('Error: ' + err));
+});
+
+
 router.route('/removeCategory/').post((req, res) => {
   platformFormat.updateOne(
     {_id:req.body.platform_format_id},
@@ -250,8 +299,27 @@ router.route('/removeCategory/').post((req, res) => {
       }
       else
       {
-        categoryData.deleteMany(
-          {category_id : req.body.category_format_id},
+        res.send(response);
+      }
+    }
+  )
+})
+
+
+//remove platforms, removes associated category format and category data 
+router.route('/removePlatform/').post((req, res) => {
+  platformFormat.deleteOne(
+    {_id:req.body.platform_format_id},
+    function(err,response)
+    {
+      if(err)
+      {
+        console.log(err)
+      }
+      else
+      {
+        user.updateMany(
+          {$pull : {recent_platforms :req.body.platform_format_id, favorited_platforms : req.body.platform_format_id}},
           function(error,data)
           {
             if(error)
@@ -261,8 +329,8 @@ router.route('/removeCategory/').post((req, res) => {
             }
             else
             {
-              categoryFormat.findByIdAndRemove(
-                {_id:req.body.category_format_id},
+              categoryFormat.deleteMany(
+                {_id : {$in : req.body.category_format_ids}},
                 function(err2,res2)
                 {
                   if(err2)
@@ -271,7 +339,20 @@ router.route('/removeCategory/').post((req, res) => {
                   }
                   else
                   {
-                    console.log(res2)
+                    categoryData.deleteMany(
+                      {category_id:{$in : req.body.category_format_ids}},
+                      function(err3,res3)
+                      {
+                        if(err3)
+                        {
+                          console.log(err3)
+                        }
+                        else
+                        {
+                          res.send(res3);
+                        }
+                      }
+                    )
                   }
                 }
               )

@@ -6,7 +6,7 @@ let categoryFormat = require('../models/categoryFormat.model');
 
 //get pageFormats using array of pageFormatID
 router.route('/getAllPages').post((req, res) => {
-    pageFormat.find({ _id: {$in : req.body.pages_id}}).sort({order: 'asc'})
+    pageFormat.find({ _id: {$in : req.body.pages_id}}).sort({createdAt: 'asc'})
       .then(pagesData => {res.json(pagesData)})
       .catch(err => res.status(400).json('Error: ' + err));
   });

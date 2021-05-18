@@ -152,6 +152,46 @@ router.post('/updatePassword/:identifier',(req, res) => {
   })
 })
 
+
+router.post('/updatePassword/:identifier',(req, res) => {
+
+  bcrypt.hash(req.body.password, 10, (err,hash) =>{
+    user.updateOne(
+      {$or:[{username: req.params.identifier},{email:req.params.identifier}]}, 
+      {password:hash}, 
+      function (err, data) {
+      if (err){
+          console.log(err)
+      }
+      else{
+          res.send(data)
+      }
+    });
+  })
+})
+
+router.post('/changePassword',(req, res) => {
+  if(bcrypt.compareSync(req.body.password, req.body.confirm_password)){
+    res.send({value: 'invalid'});
+  }
+  else{
+    bcrypt.hash(req.body.password, 10, (err,hash) =>{
+      user.updateOne(
+        {username: req.body.identifier}, 
+        {password: hash}, 
+        function (err, data) {
+        if (err){
+            console.log(err)
+        }
+        else{
+            res.send(data)
+        }
+      });
+    
+    })
+  }
+})
+
 router.route('/updateRecentlyPlayed').post((req, res) => {
   user.updateOne(
     {_id:req.body.userID},
